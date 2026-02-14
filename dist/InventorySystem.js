@@ -1,3 +1,4 @@
+"use strict";
 // 📦 Inventory Management System
 // 🛒 Create a system to manage a store’s inventory.
 //
@@ -7,50 +8,40 @@
 // 4. Implement a method `removeProduct` that removes a product from the inventory and returns a confirmation string.
 // 5. Implement a method `getProduct` that retrieves a product by its ID.
 // 6. Implement a method `getAllProducts` that returns the list of all products.
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  stock: number;
+class InventoryManager {
+    constructor() {
+        this.products = [];
+    }
+    addProduct(product) {
+        this.products.push(product);
+        return `Product ${product.name} added successfully!`;
+    }
+    updateProduct(id, update) {
+        const product = this.products.find(p => p.id === id);
+        if (!product)
+            return "Product not found";
+        Object.assign(product, update);
+        return `Product ${id} updated successfully!`;
+    }
+    getProduct(id) {
+        const product = this.products.find(p => p.id === id);
+        if (!product)
+            return "Product not found";
+        return product;
+    }
+    getAllProducts() {
+        return this.products;
+    }
+    removeProduct(id) {
+        const index = this.products.findIndex(p => p.id === id);
+        if (index === -1)
+            return "Product not found";
+        this.products.splice(index, 1);
+        return `Product ${id} removed successfully!`;
+    }
 }
-
-class InventoryManager<T extends Product> {
-  products: T[] = [];
-
-  addProduct(product: T): string {
-    this.products.push(product);
-    return `Product ${product.name} added successfully!`;
-  }
-
-  updateProduct(id: number, update: Partial<T>): string {
-    const product = this.products.find(p => p.id === id);
-    if (!product) return "Product not found";
-    Object.assign(product, update);
-    return `Product ${id} updated successfully!`;
-  }
-
-  getProduct(id: number): T | string {
-    const product = this.products.find(p => p.id === id);
-    if (!product) return "Product not found";
-    return product;
-  }
-
-  getAllProducts(): T[] {
-    return this.products;
-  }
-
-  removeProduct(id: number): string {
-    const index = this.products.findIndex(p => p.id === id);
-    if (index === -1) return "Product not found";
-    this.products.splice(index, 1);
-    return `Product ${id} removed successfully!`;
-  }
-}
-
 // Test cases
 const inventory = new InventoryManager();
-
 console.log(inventory.addProduct({ id: 1, name: "Laptop", price: 1000, stock: 5 })); // "Product Laptop added successfully!"
 console.log(inventory.addProduct({ id: 2, name: "Mouse", price: 20, stock: 50 })); // "Product Mouse added successfully!"
 console.log(inventory.updateProduct(1, { price: 900 })); // "Product 1 updated successfully!"

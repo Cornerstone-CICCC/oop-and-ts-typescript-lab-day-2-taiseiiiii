@@ -25,26 +25,39 @@ interface CartItem {
 }
 
 class ShoppingCart<T extends CartItem> {
-  cart = []
+  cart: T[] = [];
 
-  addToCart(product) {
-
+  addToCart(product: T): string {
+    const existing = this.cart.find(item => item.id === product.id);
+    if (existing) {
+      existing.quantity += product.quantity;
+      return `${product.name} quantity updated in cart.`;
+    }
+    this.cart.push(product);
+    return `${product.name} added to cart.`;
   }
 
-  updateQuantity(id, qty) {
-
+  updateQuantity(id: number, qty: number): string {
+    const item = this.cart.find(item => item.id === id);
+    if (!item) return "Product not found in cart";
+    item.quantity = qty;
+    return `Updated quantity of ${item.name} to ${qty}.`;
   }
 
-  getTotalPrice() {
-
+  getTotalPrice(): number {
+    return this.cart.reduce((total, item) => total + item.price * item.quantity, 0);
   }
 
-  getProductsOfCategory(category) {
-
+  getProductsOfCategory(category: string): T[] {
+    return this.cart.filter(item => item.category === category);
   }
 
-  removeFromCart(id) {
-
+  removeFromCart(id: number): string {
+    const index = this.cart.findIndex(item => item.id === id);
+    if (index === -1) return "Product not found in cart";
+    const name = this.cart[index].name;
+    this.cart.splice(index, 1);
+    return `${name} removed from cart.`;
   }
 }
 
